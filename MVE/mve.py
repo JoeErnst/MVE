@@ -53,7 +53,7 @@ class MVE(BaseMVE):
         params = super(MVE, self).get_params(deep=deep)
         return params
 
-    def sampling(df, jump_singular_samples, number_of_samples):
+    def sampling(self, df, jump_singular_samples, number_of_samples):
 
         sing_count = 0
         self.deg_freedom = len(df.columns.values) - 1
@@ -109,7 +109,7 @@ class MVE(BaseMVE):
         self.CX_inv = np.linalg.inv(np.dot((c2*(chi2_med**(-1)*min_mj), min_cov))
 
 
-    def weights(df):
+    def weights(self, df):
         df_arr = np.array(df)
 
         W = []
@@ -119,7 +119,7 @@ class MVE(BaseMVE):
 
         return W
 
-    def outlier(W, quantile):
+    def outlier(self, W, quantile):
         outlier = []
         c_value = st.chi2.isf(q=quantile, df=self.deg_freedom)
         for i in W:
