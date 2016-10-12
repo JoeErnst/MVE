@@ -56,7 +56,7 @@ class MVE(BaseMVE):
     def sampling(df, jump_singular_samples, number_of_samples):
 
         sing_count = 0
-        p = len(df.columns.values)
+        self.deg_freedom = len(df.columns.values) - 1
 
         print 'Starting sampling..'
         for x in xrange(0, number_of_samples):
@@ -100,12 +100,13 @@ class MVE(BaseMVE):
 
         TX = np.array([min_sample[col].mean() for col in min_sample])
 
-        c2 = np.square((1 + (15.0/df.shape[0]-p)))
+        c2 = np.square((1 + (15.0/df.shape[0]-(self.deg_freedom))))
 
-        chi2 = 1.0/(p*((1-(2.0/(9*p)))**3))
         # median of chi2 distribution
+        # chi2_med = (p*((1-(2.0/(9*p)))**3))
+        chi2_med = st.chi2.median(self.deg_freedom, loc=0, scale=1)
 
-        CX_inv = np.linalg.inv(np.dot((c2*chi2*min_mj), min_cov))
+        CX_inv = np.linalg.inv(np.dot((c2*(chi2_med**(-1)*min_mj), min_cov))
 
         return (TX, CX_inv)
 
