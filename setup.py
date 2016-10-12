@@ -37,11 +37,11 @@ setup(
         'numpy>=1.9.2',
         'pandas>=0.17.0'
     ],
-    test_suite='tests',
-    tests_require=[
-        'coverage>=3.7.1',
-        'nose==1.3.7'
-    ],
+#    test_suite='tests',
+#    tests_require=[
+#        'coverage>=3.7.1',
+#        'nose==1.3.7'
+#    ],
     zip_safe=False,
     estimator=[
         'Operating System :: OS Independent',
