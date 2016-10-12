@@ -4,9 +4,9 @@ import sys
 
 from setuptools import setup, find_packages
 
-import mve
+import MVE
 
-version = mve.__version__
+version = MVE.__version__
 
 if sys.argv[-1] == 'publish':
     if os.system("pip freeze | grep wheel"):
