@@ -98,7 +98,7 @@ class MVE(BaseMVE):
         min_mj = sample_indices[str(min(pjs))][1]
         min_cov = np.array(sample_indices[str(min(pjs))][2])
 
-        TX = np.array([min_sample[col].mean() for col in min_sample])
+        self.TX = np.array([min_sample[col].mean() for col in min_sample])
 
         c2 = np.square((1 + (15.0/df.shape[0]-(self.deg_freedom))))
 
@@ -106,23 +106,22 @@ class MVE(BaseMVE):
         # chi2_med = (p*((1-(2.0/(9*p)))**3))
         chi2_med = st.chi2.median(self.deg_freedom, loc=0, scale=1)
 
-        CX_inv = np.linalg.inv(np.dot((c2*(chi2_med**(-1)*min_mj), min_cov))
+        self.CX_inv = np.linalg.inv(np.dot((c2*(chi2_med**(-1)*min_mj), min_cov))
 
-        return (TX, CX_inv)
 
-    def weights(df, TX, CX_inv):
+    def weights(df):
         df_arr = np.array(df)
 
         W = []
         for obs in df_arr:
-            x = obs - TX
-            W.append(np.dot(np.dot(x, CX_inv), x.T))
+            x = obs - self.TX
+            W.append(np.dot(np.dot(x, self.CX_inv), x.T))
 
         return W
 
-    def outlier(W, q, p):
+    def outlier(W, quantile):
         outlier = []
-        c_value = st.chi2.isf(q=q, df=p)
+        c_value = st.chi2.isf(q=quantile, df=self.deg_freedom)
         for i in W:
             if i > c_value:
                 outlier.append(1)
