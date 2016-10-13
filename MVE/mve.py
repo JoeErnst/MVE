@@ -46,8 +46,7 @@ class MVE(BaseMVE):
 
     def __init__(self, **kwargs):
         """Copy params to object properties, no validation."""
-        #super(MVE, self).__init__(**kwargs)
-        MVE.__init__(self)
+        super(MVE, self).__init__(**kwargs)
 
     def get_params(self, deep=True):
         """Return parameters as a dictionary."""
