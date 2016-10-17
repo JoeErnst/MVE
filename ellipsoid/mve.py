@@ -59,11 +59,10 @@ class mve(object):
 
             if jump_singular_samples:
 
-                try:
+                if np.linalg.det(cov_s) != 0:
                     inv_cov = np.linalg.inv(cov_s)
-                except:
+                elif:
                     sing_count += 1
-                    continue
             else:
                 inv_cov = np.linalg.inv(cov_s)
 
