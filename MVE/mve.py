@@ -9,7 +9,7 @@ from scipy import stats as st
 # ------------------------------------------------------------------------------
 
 
-class BaseMVE:
+class BaseMVE(object):
 
     """Base Minimum Volume Ellipsoid Analysis class.
     Implementation of TO BE COMPLETED.
