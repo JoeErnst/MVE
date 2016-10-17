@@ -61,7 +61,7 @@ class mve(object):
 
                 if np.linalg.det(cov_s) != 0:
                     inv_cov = np.linalg.inv(cov_s)
-                elif:
+                else:
                     sing_count += 1
             else:
                 inv_cov = np.linalg.inv(cov_s)
