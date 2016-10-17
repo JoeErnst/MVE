@@ -4,9 +4,9 @@ import sys
 
 from setuptools import setup, find_packages
 
-import MVE
+import ellipsoid
 
-version = MVE.__version__
+version = ellipsoid.__version__
 
 if sys.argv[-1] == 'publish':
     if os.system("pip freeze | grep wheel"):
@@ -29,13 +29,14 @@ setup(
         'Minimum Volume Ellipsoid Analysis'
     ),
     url='https://github.com/JoeErnst/MVE',
-    author='Joe Ernst',
+    author='Joe Ernst, Philipp Dufter',
     author_email='joe.m.ernst@gmail.com',
     license='BSD',
     packages=find_packages(exclude=['tests*']),
     install_requires=[
         'numpy>=1.9.2',
-        'pandas>=0.17.0'
+        'pandas>=0.17.0',
+        'scipy>=0.17.0'
     ],
 #    test_suite='tests',
 #    tests_require=[
