@@ -8,7 +8,7 @@ from scipy import stats as st
 # MINIMUM VOLUME ELLIPSOID ANALYSIS
 # ------------------------------------------------------------------------------
 
-class MVE(object):
+class mve(object):
 
     """Base Minimum Volume Ellipsoid Analysis class.
     Implementation of TO BE COMPLETED.
