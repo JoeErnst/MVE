@@ -8,8 +8,7 @@ from scipy import stats as st
 # MINIMUM VOLUME ELLIPSOID ANALYSIS
 # ------------------------------------------------------------------------------
 
-
-class BaseMVE(object):
+class MVE(object):
 
     """Base Minimum Volume Ellipsoid Analysis class.
     Implementation of TO BE COMPLETED.
@@ -37,21 +36,6 @@ class BaseMVE(object):
         for parameter, value in parameters.items():
             setattr(self, parameter, value)
         return self
-
-
-class MVE(BaseMVE):
-
-    """
-    """
-
-    def __init__(self, **kwargs):
-        """Copy params to object properties, no validation."""
-        super(MVE, self).__init__(**kwargs)
-
-    def get_params(self, deep=True):
-        """Return parameters as a dictionary."""
-        params = super(MVE, self).get_params(deep=deep)
-        return params
 
     def sampling(self, df, jump_singular_samples, number_of_samples):
 
