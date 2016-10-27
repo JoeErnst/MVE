@@ -1,7 +1,7 @@
 """mve implements Minimum Volume Ellipsoid Analysis"""
 
-from .mve import MVE
+from .mve import mve
 
-__all__ = ['MVE']
+__all__ = ['mve']
 
 __version__ = '0.1'
