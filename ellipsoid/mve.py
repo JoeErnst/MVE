@@ -8,9 +8,11 @@ from scipy import stats as st
 # MINIMUM VOLUME ELLIPSOID ANALYSIS
 # ------------------------------------------------------------------------------
 
+
 class mve(object):
 
-    """Base Minimum Volume Ellipsoid Analysis class.
+    """
+    Base Minimum Volume Ellipsoid Analysis class.
     Implementation of TO BE COMPLETED.
     """
 
@@ -89,10 +91,8 @@ class mve(object):
         # chi2_med = (p*((1-(2.0/(9*p)))**3))
         chi2_med = st.chi2.median(self.deg_freedom, loc=0, scale=1)
 
-        self.CX_inv = np.linalg.inv(np.dot((c2*(chi2_med**(-1)*min_mj), min_cov)))
-
-
-
+        self.CX_inv = np.linalg.inv(
+            np.dot((c2*(chi2_med**(-1)*min_mj), min_cov)))
 
     def weights(self, df):
         df_arr = np.array(df)
