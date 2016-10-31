@@ -23,10 +23,9 @@ class mve(object):
 
     def __init__(
         self,
-        n_samples=10000
+        n_samples = 10000
     ):
         self.n_samples = n_samples
-
 
     def get_params(self):
         """Return parameters as a dictionary.
@@ -43,21 +42,57 @@ class mve(object):
             setattr(self, parameter, value)
         return self
 
+
     def fit(self, X):
         # TODO insert test of missing data
         # TODO accept multiple datatypes
+        # TODO add test if enough variance is existant
+
         self.n_features = len(X[0])
         self.n_data = len(X)
+        self.required_n_data = int((self.n_data + self.n_features + 1) / 2)
+        self.minimum_volume = float('inf')
+        self.resulting_data = np.array([])
 
         for i in range(0, self.n_samples):
-            print i
+            # TODO allow for deterministic order as well
+            sample_indices = np.random.choice(range(0, self.n_data), size=self.n_features+1, replace=False)
+            sample_data = X[sample_indices].transpose()
+
+            mean = sample_data.mean(axis=1)
+            vcov = np.cov(sample_data)
+
+            # TODO add to parameters
+            # Add data if VCOV Matrix is singular
+            max_iter_singularity = int(self.n_data / 5)
+            j = 0
+            while np.linalg.det(vcov) == 0 and j <= max_iter_singularity:
+                add_sample_index = np.random.choice(range(0, self.n_data), size=1)
+                # prevent duplicated indices
+                if any(sample_indices == add_sample_index):
+                    continue
+                sample_indices = np.append(sample_indices, add_sample_index)
+
+                sample_data = X[sample_indices].transpose()
+                vcov = np.cov(sample_data)
+
+                j = j + 1
+
+            if np.linalg.det(vcov) == 0:
+                raise ValueError("Singular Data")
+
+            # either for loop or a lot of redundant caluclations (but vectorised)                
+            print X
+            print mean
+            print vcov
+            break
+
 
 
 if __name__ == "__main__":
     mymve = mve()
 
-    mymve.set_params(n_samples=2000)
-    print mymve.get_params()
+    mymve.set_params(n_samples=500)
 
     from sklearn.datasets import load_boston
     X1 = load_boston()['data'][:, [8, 10]]  # two clusters
