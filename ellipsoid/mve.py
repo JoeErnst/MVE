@@ -51,8 +51,9 @@ class mve(object):
         self.n_features = len(X[0])
         self.n_data = len(X)
         self.required_n_data = int((self.n_data + self.n_features + 1) / 2)
-        self.minimum_volume = float('inf')
+        self.P_J = float('inf')
         self.resulting_data = np.array([])
+        self.resulting_indices = np.array([])
 
         for i in range(0, self.n_samples):
             # TODO allow for deterministic order as well
@@ -64,7 +65,7 @@ class mve(object):
 
             # TODO add to parameters
             # Add data if VCOV Matrix is singular
-            max_iter_singularity = int(self.n_data / 5)
+            max_iter_singularity = self.required_n_data
             j = 0
             while np.linalg.det(vcov) == 0 and j <= max_iter_singularity:
                 add_sample_index = np.random.choice(range(0, self.n_data), size=1)
@@ -81,11 +82,19 @@ class mve(object):
             if np.linalg.det(vcov) == 0:
                 raise ValueError("Singular Data")
 
-            # either for loop or a lot of redundant caluclations (but vectorised)                
-            print X
-            print mean
-            print vcov
-            break
+            # either for loop or a lot of redundant caluclations (but vectorised)
+            X_minus_mean = X - np.tile(mean, (self.n_data,1))      
+            m_J_squared_array = np.diag(X_minus_mean.dot(np.linalg.inv(vcov)).dot(X_minus_mean.transpose()))
+            m_J_squared = np.sort(m_J_squared_array)[self.required_n_data]
+
+            P_J_tmp = np.sqrt(m_J_squared ** self.n_features * np.linalg.det(vcov))
+            if self.P_J > P_J_tmp:
+                self.resulting_data = X[sample_indices].transpose()
+                self.P_J = P_J_tmp
+
+        sample_correction_term = (1 + 15 / (self.n_data - self.n_features)) **2 
+        chi2_med = st.chi2.median(self.n_features, loc=0, scale=1)
+        C_X = sample_correction_term * (1 / chi2_med) * 
 
 
 
@@ -99,5 +108,6 @@ if __name__ == "__main__":
 
     mymve.fit(X1)
 
+    print mymve.P_J
 
 
