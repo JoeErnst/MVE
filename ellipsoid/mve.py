@@ -14,6 +14,10 @@ class mve(object):
     """
     Base Minimum Volume Ellipsoid Analysis class.
     Implementation of TO BE COMPLETED.
+    BASE PAPER: http://onlinelibrary.wiley.com/doi/10.1002/env.628/abstract
+
+    Accept multiple types
+    testbeispiel
     """
 
     def __init__(
