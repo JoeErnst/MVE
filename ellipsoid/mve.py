@@ -16,10 +16,13 @@ class mve(object):
     http://onlinelibrary.wiley.com/doi/10.1002/env.628/abstract
     http://scikit-learn.org/stable/modules/generated/sklearn.covariance.MinCovDet.html
     
-    TICKETS
-    finish implementation
-    Singularity issues of covariance matrix (jump, add epsilon, add data)
+    TODO
+    Multiple ways of handling Singularity issues of covariance matrix (jump, add epsilon, add data)
+    more flexible data handling
+    Readme file
+    add nice examples
     """
+
 
     def __init__(
         self,
@@ -69,7 +72,8 @@ class mve(object):
             j = 0
             while np.linalg.det(vcov) == 0 and j <= max_iter_singularity:
                 add_sample_index = np.random.choice(range(0, self.n_data), size=1)
-                # prevent duplicated indices
+                # prevent duplicated indices 
+                # TODO make more efficient, e.g. with set operations
                 if any(sample_indices == add_sample_index):
                     continue
                 sample_indices = np.append(sample_indices, add_sample_index)
@@ -89,25 +93,60 @@ class mve(object):
 
             P_J_tmp = np.sqrt(m_J_squared ** self.n_features * np.linalg.det(vcov))
             if self.P_J > P_J_tmp:
+                self.resulting_indices = sample_indices.copy()
                 self.resulting_data = X[sample_indices].transpose()
                 self.P_J = P_J_tmp
 
-        sample_correction_term = (1 + 15 / (self.n_data - self.n_features)) **2 
-        chi2_med = st.chi2.median(self.n_features, loc=0, scale=1)
-        C_X = sample_correction_term * (1 / chi2_med) * 
+        sample_correction_term = (1 + 15 / (self.n_data - self.n_features)) **2
 
+        chi2_med = st.chi2.median(self.n_features, loc=0, scale=1)
+        
+        T_X = self.resulting_data.mean(axis=1)
+        C_X = sample_correction_term * (1 / chi2_med) * m_J_squared * np.cov(self.resulting_data)
+        
+        self.mean_hat = T_X
+        self.vcov_hat = C_X
+        self.X = X.copy()
+
+        return 1
+
+    def get_distances(self, X=None):
+        if X is None:
+            X = self.X
+        
+        X_minus_mean = X - np.tile(self.mean_hat, (len(X), 1))    
+
+        return np.diag(X_minus_mean.dot(np.linalg.inv(self.vcov_hat)).dot(X_minus_mean.transpose()))
 
 
 if __name__ == "__main__":
     mymve = mve()
 
-    mymve.set_params(n_samples=500)
+    mymve.set_params(n_samples=5000)
 
     from sklearn.datasets import load_boston
     X1 = load_boston()['data'][:, [8, 10]]  # two clusters
+    # X1 = load_boston()['data'][:, [5, 12]]  # "banana"-shaped
 
     mymve.fit(X1)
 
-    print mymve.P_J
+    distances = mymve.get_distances()
 
+
+    # ANALYSE RESULTS GRAPHICALLY
+    percentile = 0.97
+
+    binary_distances = distances <= np.percentile(distances, percentile * 100, axis=0)
+
+    import matplotlib.pyplot as plt
+
+    plt.scatter(X1.transpose()[0], X1.transpose()[1], c=distances)
+    
+    for i, txt in enumerate(distances):
+        if txt >= np.percentile(distances, percentile * 100, axis=0):
+            plt.annotate(txt, (X1.transpose()[0][i],X1.transpose()[1][i]))
+
+    #plt.colorbar()
+    #plt.scatter(X1.transpose()[0, binary_distances], X1.transpose()[1, binary_distances])
+    plt.show()
 
