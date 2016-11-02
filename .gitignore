@@ -1,3 +1,4 @@
 lit/*
 *.pyc
 archive/*
+ENV/*
