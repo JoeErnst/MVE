@@ -190,7 +190,7 @@ class mve(object):
 
         return (self.mean_hat, self.vcov_hat)
 
-    def get_distances(self, X=None):
+    def get_distances(self, X=None, mean_hat=None, vcov_hat=None):
         '''Given center and covariance matrix of an ellispoid, calculates a ranking for data X
 
         Parameters
@@ -204,10 +204,16 @@ class mve(object):
 
         if X is None:
             X = self.X
+        
+        if mean_hat is None:
+            mean_hat = self.mean_hat
+        
+        if vcov_hat is None:
+            vcov_hat = self.vcov_hat
 
-        X_minus_mean = X - numpy.tile(self.mean_hat, (len(X), 1))
+        X_minus_mean = X - numpy.tile(mean_hat, (len(X), 1))
 
-        return numpy.diag(X_minus_mean.dot(numpy.linalg.inv(self.vcov_hat)).dot(X_minus_mean.transpose()))
+        return numpy.diag(X_minus_mean.dot(numpy.linalg.inv(vcov_hat)).dot(X_minus_mean.transpose()))
 
 
 if __name__ == "__main__":
