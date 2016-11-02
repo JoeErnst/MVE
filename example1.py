@@ -5,11 +5,9 @@ import numpy
 
 from ellipsoid.mve import mve
 
-numpy.random.seed(12345)
+mymve = mve(random_state=12345)
 
-mymve = mve()
-
-mymve.set_params(n_samples=5000)
+mymve.set_params(n_samples=5000, singularity_add_samples=3)
 
 # load dataset
 #X1 = load_boston()['data'][:, [8, 10]]  # two clusters
