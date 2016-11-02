@@ -19,3 +19,5 @@ TODO
 - add more ways to handle singular covariance matrices
 - add examples to Readme
 - compare to scikit learn libraries
+- add requirements.txt
+- check python3 support
