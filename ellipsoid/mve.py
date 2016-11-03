@@ -164,7 +164,7 @@ class mve(object):
             # adds a diagonal matrix to vcov if the addition of artificial variance 
             # is permitted
             if numpy.linalg.det(vcov) == 0 and self.artificial_variance:
-                vcov = numpy.diag(numpy.full(numpy.linalg.det(vcov).shape[0], 0.1)) + vcov
+                vcov = numpy.diag(numpy.full(vcov.shape[0], 0.1)) + vcov
             elif numpy.linalg.det(vcov) == 0:
                 raise ValueError("Singular Data")
 
