@@ -182,6 +182,9 @@ class mve(object):
                 self.resulting_indices = sample_indices.copy()
                 self.resulting_data = X[sample_indices].transpose()
                 self.P_J = P_J_tmp
+            
+            if (not i % 1000):
+                print 'Number of drawn samples: ' + str(i)
 
         sample_correction_term = (
             1 + 15 / (self.n_data - self.n_features)) ** 2
