@@ -68,7 +68,7 @@ class mve(object):
         self.required_n_data = None
         self.singularity_add_samples = singularity_add_samples
         self.random_state = random_state
-        self.artificial_variance
+        self.artificial_variance = artificial_variance
 
         if random_state is not None:
             numpy.random.seed(random_state)
