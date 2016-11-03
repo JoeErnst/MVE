@@ -60,13 +60,15 @@ class mve(object):
         n_samples=10000,
         required_n_data=None,
         singularity_add_samples=1,
-        random_state=None
+        random_state=None,
+        artificial_variance=False
     ):
 
         self.n_samples = n_samples
         self.required_n_data = None
         self.singularity_add_samples = singularity_add_samples
         self.random_state = random_state
+        self.artificial_variance
 
         if random_state is not None:
             numpy.random.seed(random_state)
@@ -82,7 +84,8 @@ class mve(object):
             'n_samples': self.n_samples,
             'required_n_data': self.required_n_data,
             'singularity_add_samples': self.singularity_add_samples,
-            'random_state': self.random_state
+            'random_state': self.random_state,
+            'artificial_variance': self.artificial_variance
         }
         return params
 
@@ -120,7 +123,7 @@ class mve(object):
             raise ValueError("Inhomogenous dataset.")
 
         tolerance = 0.1
-        if numpy.abs(numpy.linalg.det(numpy.cov(X.transpose()))) <= tolerance:
+        if numpy.abs(numpy.linalg.det(numpy.cov(X.transpose()))) <= tolerance and not artificial_variance:
             raise ValueError(
                 "Lack of variance in data.", numpy.abs(numpy.linalg.det(numpy.cov(X))))
 
@@ -157,8 +160,12 @@ class mve(object):
                 vcov = numpy.cov(sample_data)
 
                 j = j + 1
-
-            if numpy.linalg.det(vcov) == 0:
+            
+            # adds a diagonal matrix to vcov if the addition of artificial variance 
+            # is permitted
+            if numpy.linalg.det(vcov) == 0 and artificial_variance:
+                vcov = numpy.diag(numpy.full(numpy.linalg.det(vcov).shape[0], 0.1)) + vcov
+            elif numpy.linalg.det(vcov) == 0:
                 raise ValueError("Singular Data")
 
             # either for loop or a lot of redundant caluclations (but
