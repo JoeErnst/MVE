@@ -164,8 +164,12 @@ class mve(object):
             # either for loop or a lot of redundant caluclations (but
             # vectorised)
             X_minus_mean = X - numpy.tile(mean, (self.n_data, 1))
-            m_J_squared_array = numpy.diag(
-                X_minus_mean.dot(numpy.linalg.inv(vcov)).dot(X_minus_mean.transpose()))
+            
+            m_J_squared_list = []
+            for i in X_minus_mean:
+                m_J_squared_list.append(numpy.dot(numpy.dot(i, numpy.linalg.inv(vcov)), i.T)) 
+            m_J_squared_array = numpy.array(m_J_squared_list)
+            
             m_J_squared = numpy.sort(m_J_squared_array)[self.required_n_data]
 
             P_J_tmp = numpy.sqrt(
