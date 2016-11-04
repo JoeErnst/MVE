@@ -179,7 +179,7 @@ class mve(object):
             print 'Sample drawn in:'
             print datetime.now() - start_time
 
-            elif numpy.linalg.det(vcov) == 0:
+            if numpy.linalg.det(vcov) == 0:
                 raise ValueError("Singular Data")
 
             # either for loop or a lot of redundant caluclations (but
