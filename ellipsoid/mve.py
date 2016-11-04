@@ -1,5 +1,6 @@
 import numpy
 from scipy.stats import chi2
+from datetime import datetime, timedelta
 
 # ------------------------------------------------------------------------------
 # MINIMUM VOLUME ELLIPSOID ANALYSIS
@@ -113,6 +114,9 @@ class mve(object):
         ----------
         (numpy nd array center of ellipsoid, numpy nd array covariance matrix of ellipsoid)
         """
+        
+        start_time = datetime.now()
+        
         if not isinstance(X, numpy.ndarray):
             try:
                 X = numpy.array(X, dtype='float')
@@ -134,8 +138,11 @@ class mve(object):
         self.P_J = float('inf')
         self.resulting_data = numpy.array([])
         self.resulting_indices = numpy.array([])
-
+        
+        print datetime.now() - start_time
+        
         for i in range(0, self.n_samples):
+            start_time = datetime.now()
             # potentially allow for deterministic order as well
             sample_indices = numpy.random.choice(
                 range(0, self.n_data), size=self.n_features+1, replace=False)
@@ -143,10 +150,14 @@ class mve(object):
 
             mean = sample_data.mean(axis=1)
             vcov = numpy.cov(sample_data)
-
+            
+            print 'Sample drawn, mean and vcov computed in:'
+            print datetime.now() - start_time
+            
             max_iter_singularity = self.required_n_data
             j = 0
             while numpy.linalg.det(vcov) == 0 and j <= max_iter_singularity:
+                start_time2 = datetime.now()
                 # prevent duplicated indices
                 remaining_indices = numpy.setdiff1d(
                     range(0, self.n_data), sample_indices)
@@ -160,6 +171,11 @@ class mve(object):
                 vcov = numpy.cov(sample_data)
 
                 j = j + 1
+                
+                print 'New observation(s) added to sample in:'
+                print datetime.now() - start_time2
+            
+            start_time3 = datetime.now()
             
             # adds a diagonal matrix to vcov if the addition of artificial variance 
             # is permitted
@@ -185,6 +201,12 @@ class mve(object):
             
             if (not i % 10):
                 print 'Number of drawn samples: ' + str(i)
+                
+            print 'Finished computation of P_J_tmp in:'
+            print datetime.now() - start_time3
+            
+            print 'Sampling iteration completed in:'
+            print datime.now() - start_time
 
         sample_correction_term = (
             1 + 15 / (self.n_data - self.n_features)) ** 2
