@@ -178,7 +178,7 @@ class mve(object):
             #m_J_squared_array = numpy.diag(
             #    X_minus_mean.dot(numpy.linalg.inv(vcov)).dot(X_minus_mean.transpose()))
 
-            mean_array = numpy.tile(mean, (self.n_data, 1)
+            mean_array = numpy.tile(mean, (self.n_data, 1))
             m_J_squared_list = []
             for i in X:
                 i = i - mean_array
