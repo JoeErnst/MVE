@@ -122,14 +122,14 @@ class mve(object):
 
         if any([len(datapoint) != len(X[0]) for datapoint in X]):
             raise ValueError("Inhomogenous dataset.")
-
+        print 1
         tolerance = 0.1
         if numpy.abs(numpy.linalg.det(numpy.cov(X.transpose()))) <= tolerance and not self.artificial_variance:
             raise ValueError(
                 "Lack of variance in data.", numpy.abs(numpy.linalg.det(numpy.cov(X))))
 
         self.n_data, self.n_features = X.shape
-
+        
         if self.required_n_data is None:
             self.required_n_data = int((self.n_data + self.n_features + 1) / 2)
         self.P_J = float('inf')
@@ -177,23 +177,23 @@ class mve(object):
             #X_minus_mean = X - numpy.tile(mean, (self.n_data, 1))
             #m_J_squared_array = numpy.diag(
             #    X_minus_mean.dot(numpy.linalg.inv(vcov)).dot(X_minus_mean.transpose()))
-
+            print 2
             mean_array = numpy.tile(mean, (self.n_data, 1))
             m_J_squared_list = []
             for i in X:
                 i = i - mean_array
                 m_J_squared_list.append(numpy.dot(numpy.dot(i, numpy.linalg.inv(vcov)), i.T)) 
             m_J_squared_array = numpy.array(m_J_squared_list)
-            
+            print 3
             m_J_squared = numpy.sort(m_J_squared_array)[self.required_n_data]
-
+            print 4
             P_J_tmp = numpy.sqrt(
                 m_J_squared ** self.n_features * numpy.linalg.det(vcov))
             if self.P_J > P_J_tmp:
                 self.resulting_indices = sample_indices.copy()
                 self.resulting_data = X[sample_indices].transpose()
                 self.P_J = P_J_tmp
-            
+            print 5
             if (not i % 100):
                 print 'Number of drawn samples: ' + str(i)
 
