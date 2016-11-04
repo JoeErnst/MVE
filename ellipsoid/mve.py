@@ -171,7 +171,8 @@ class mve(object):
 
                 j = j + 1
             
-            start_time3 = datetime.now()
+            print 'Sample drawn in:'
+            print datetime.now() - start_time
             
             # adds a diagonal matrix to vcov if the addition of artificial variance 
             # is permitted
@@ -197,9 +198,6 @@ class mve(object):
             
             if (not i % 10):
                 print 'Number of drawn samples: ' + str(i)
-                
-            print 'Finished computation of P_J_tmp in:'
-            print datetime.now() - start_time3
             
             print 'Sampling iteration completed in:'
             print datetime.now() - start_time
