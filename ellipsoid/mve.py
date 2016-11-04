@@ -137,7 +137,6 @@ class mve(object):
         self.resulting_indices = numpy.array([])
                
         for i in range(0, self.n_samples):
-            start_time = datetime.now()
             # potentially allow for deterministic order as well
             sample_indices = numpy.random.choice(
                 range(0, self.n_data), size=self.n_features+1, replace=False)
