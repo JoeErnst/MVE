@@ -1,6 +1,5 @@
 import numpy
 from scipy.stats import chi2
-from datetime import datetime, timedelta
 
 # ------------------------------------------------------------------------------
 # MINIMUM VOLUME ELLIPSOID ANALYSIS
@@ -115,8 +114,6 @@ class mve(object):
         (numpy nd array center of ellipsoid, numpy nd array covariance matrix of ellipsoid)
         """
         
-        start_time = datetime.now()
-        
         if not isinstance(X, numpy.ndarray):
             try:
                 X = numpy.array(X, dtype='float')
@@ -149,9 +146,6 @@ class mve(object):
             mean = sample_data.mean(axis=1)
             vcov = numpy.cov(sample_data)
             
-            print 'Sample drawn, mean and vcov computed in:'
-            print datetime.now() - start_time
-            
             max_iter_singularity = self.required_n_data
             
             # adds a diagonal matrix to vcov if the addition of artificial variance 
@@ -175,9 +169,6 @@ class mve(object):
                     vcov = numpy.cov(sample_data)
 
                     j = j + 1
-            
-            print 'Sample drawn in:'
-            print datetime.now() - start_time
 
             if numpy.linalg.det(vcov) == 0:
                 raise ValueError("Singular Data")
@@ -197,11 +188,8 @@ class mve(object):
                 self.resulting_data = X[sample_indices].transpose()
                 self.P_J = P_J_tmp
             
-            if (not i % 10):
+            if (not i % 100):
                 print 'Number of drawn samples: ' + str(i)
-            
-            print 'Sampling iteration completed in:'
-            print datetime.now() - start_time
 
         sample_correction_term = (
             1 + 15 / (self.n_data - self.n_features)) ** 2
