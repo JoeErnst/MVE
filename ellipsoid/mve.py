@@ -138,9 +138,7 @@ class mve(object):
         self.P_J = float('inf')
         self.resulting_data = numpy.array([])
         self.resulting_indices = numpy.array([])
-        
-        print datetime.now() - start_time
-        
+               
         for i in range(0, self.n_samples):
             start_time = datetime.now()
             # potentially allow for deterministic order as well
@@ -155,29 +153,32 @@ class mve(object):
             print datetime.now() - start_time
             
             max_iter_singularity = self.required_n_data
-            j = 0
-            while numpy.linalg.det(vcov) == 0 and j <= max_iter_singularity:
-                # prevent duplicated indices
-                remaining_indices = numpy.setdiff1d(
-                    range(0, self.n_data), sample_indices)
-                add_sample_index = numpy.random.choice(
-                    remaining_indices, size=self.singularity_add_samples)
-                # prevent duplicated indices
+            
+            # adds a diagonal matrix to vcov if the addition of artificial variance 
+            # is permitted and jumps the increase of additional samples.
+            if self.artificial_variance and numpy.linalg.det(vcov) == 0:
+                vcov = numpy.diag(numpy.full(vcov.shape[0], 0.1)) + vcov
+                
+            elif not self.artificial_variance:
+                j = 0
+                while numpy.linalg.det(vcov) == 0 and j <= max_iter_singularity:
+                    # prevent duplicated indices
+                    remaining_indices = numpy.setdiff1d(
+                        range(0, self.n_data), sample_indices)
+                    add_sample_index = numpy.random.choice(
+                        remaining_indices, size=self.singularity_add_samples)
+                    # prevent duplicated indices
 
-                sample_indices = numpy.append(sample_indices, add_sample_index)
+                    sample_indices = numpy.append(sample_indices, add_sample_index)
 
-                sample_data = X[sample_indices].transpose()
-                vcov = numpy.cov(sample_data)
+                    sample_data = X[sample_indices].transpose()
+                    vcov = numpy.cov(sample_data)
 
-                j = j + 1
+                    j = j + 1
             
             print 'Sample drawn in:'
             print datetime.now() - start_time
-            
-            # adds a diagonal matrix to vcov if the addition of artificial variance 
-            # is permitted
-            if numpy.linalg.det(vcov) == 0 and self.artificial_variance:
-                vcov = numpy.diag(numpy.full(vcov.shape[0], 0.1)) + vcov
+
             elif numpy.linalg.det(vcov) == 0:
                 raise ValueError("Singular Data")
 
