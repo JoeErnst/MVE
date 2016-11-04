@@ -157,7 +157,6 @@ class mve(object):
             max_iter_singularity = self.required_n_data
             j = 0
             while numpy.linalg.det(vcov) == 0 and j <= max_iter_singularity:
-                start_time2 = datetime.now()
                 # prevent duplicated indices
                 remaining_indices = numpy.setdiff1d(
                     range(0, self.n_data), sample_indices)
@@ -171,9 +170,6 @@ class mve(object):
                 vcov = numpy.cov(sample_data)
 
                 j = j + 1
-                
-                print 'New observation(s) added to sample in:'
-                print datetime.now() - start_time2
             
             start_time3 = datetime.now()
             
@@ -206,7 +202,7 @@ class mve(object):
             print datetime.now() - start_time3
             
             print 'Sampling iteration completed in:'
-            print datime.now() - start_time
+            print datetime.now() - start_time
 
         sample_correction_term = (
             1 + 15 / (self.n_data - self.n_features)) ** 2
