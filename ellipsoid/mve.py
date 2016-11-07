@@ -179,9 +179,10 @@ class mve(object):
             #    X_minus_mean.dot(numpy.linalg.inv(vcov)).dot(X_minus_mean.transpose()))
 
             m_J_squared_list = []
+            vcov_inv = numpy.linalg.inv(vcov)
             for obs in X:
                 obs = obs - mean
-                m_J_squared_list.append(numpy.dot(numpy.dot(obs, numpy.linalg.inv(vcov)), obs.T)) 
+                m_J_squared_list.append(numpy.dot(numpy.dot(obs, vcov_inv), obs.T)) 
             m_J_squared_array = numpy.array(m_J_squared_list)
 
             m_J_squared = numpy.sort(m_J_squared_array)[self.required_n_data]
