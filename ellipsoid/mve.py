@@ -239,10 +239,14 @@ class mve(object):
         
         if vcov_hat is None:
             vcov_hat = self.vcov_hat
+        
+        distances = []
+        vcov_hat_inv = numpy.linalg.inv(vcov_hat)
+        for obs in X:
+            obs = obs - mean_hat
+            distances.append(numpy.dot(numpy.dot(obs, vcov_hat_inv), obs.T)) 
 
-        X_minus_mean = X - numpy.tile(mean_hat, (len(X), 1))
-
-        return numpy.diag(X_minus_mean.dot(numpy.linalg.inv(vcov_hat)).dot(X_minus_mean.transpose()))
+        return distances
 
 
 if __name__ == "__main__":
