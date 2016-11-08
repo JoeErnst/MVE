@@ -203,8 +203,15 @@ class mve(object):
         chi2_med = chi2.median(self.n_features, loc=0, scale=1)
 
         T_X = self.resulting_data.mean(axis=1)
-        C_X = sample_correction_term * \
-            (1 / chi2_med) * m_J_squared * numpy.cov(self.resulting_data)
+        # adds a diagonal matrix to vcov if the addition of artificial variance 
+        # is permitted and jumps the increase of additional samples.
+        if self.artificial_variance and numpy.linalg.det(numpy.cov(self.resulting_data)) == 0:
+            C_X = sample_correction_term * \
+                (1 / chi2_med) * m_J_squared * \
+                (numpy.diag(numpy.full(numpy.cov(self.resulting_data).shape[0], 0.1)) + numpy.cov(self.resulting_data))
+        else:    
+            C_X = sample_correction_term * \
+                (1 / chi2_med) * m_J_squared * numpy.cov(self.resulting_data)
 
         self.X = X.copy()
         self.mean_hat = T_X
