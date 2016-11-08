@@ -233,12 +233,27 @@ class mve(object):
 
         if X is None:
             X = self.X
+        else:
+            try:
+                X = numpy.array(X, dtype='float')
+            except:
+                raise ValueError("X must be (numpy)-array like.")
         
         if mean_hat is None:
             mean_hat = self.mean_hat
+        else:
+            try:
+                mean_hat = numpy.array(mean_hat, dtype='float')
+            except:
+                raise ValueError("mean_hat must be (numpy)-array like.")
         
         if vcov_hat is None:
             vcov_hat = self.vcov_hat
+        else:
+            try:
+                vcov_hat = numpy.array(vcov_hat, dtype='float')
+            except:
+                raise ValueError("vcov_hat must be (numpy)-array like.")
         
         distances = []
         vcov_hat_inv = numpy.linalg.inv(vcov_hat)
